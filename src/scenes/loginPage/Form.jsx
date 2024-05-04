@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Box,
   Button,
@@ -113,8 +113,32 @@ const Form = () => {
     //   .then((response) => {
     //     console.log("This is get oauth response", response)
     //   })
+   
 
   };
+  
+  useEffect(() => {
+    const getQueryParams = (url) => {
+      const params = new URLSearchParams(new URL(url).search);
+      return {
+        token: params.get('token'),
+      };
+    };
+  
+    const { token } = getQueryParams(window.location.href);
+    console.log('Token from URL:', token);
+  
+    if (token) {
+      console.log('Dispatching token...');
+      dispatch(setLogin({ token }));
+  
+      console.log('Setting token in local storage...');
+      localStorage.setItem('authToken', token);
+  
+      console.log('Navigating to /home...');
+      navigate('/home', { replace: true });
+    }
+  }, [dispatch, navigate]);
 
   return (
     <Formik
